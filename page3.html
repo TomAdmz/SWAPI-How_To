@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Star Wars API How-To</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body> 
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-2" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> <a class="navbar-brand" href="main.html">Star Wars API How-To</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Menu <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="page1.html">SWAPI - Getting Started</a>
+                </li>
+                <li>
+                  <a href="page2.html">SWAPI - First Call with JavaScript</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page3.html">SWAPI - Discovering Planets</a>
+                </li>
+                <li>
+                  <a href="page4.html">SWAPI - Listing all Planets</a>
+                </li>
+                <li>
+                  <a href="page5.html">SWAPI - Interactive Lists</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page6.html">SWAPI - Nesting Calls</a>
+                </li>
+                <li>
+                  <a href="page7.html">SWAPI - Final Project</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>
+          Discovering Planets
+        </h1>
+        <img src="page3.png" class="pull-right">
+        <p>
+          In this module we're going to go over how we'll use JavaScript to get info on all the planets.<br>
+          You'll Learn:
+        <ul>
+          <li>Different ways to access all of the planets</li>
+          <li>How to access the data we want</li>
+        </ul>
+      </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Accessing All Of The Planets</h2>
+      <p>
+        One way to extract all the info we want without making a call, checking the console and then making another call, is to use a loop to make a call to every planet page and extract all of the information from the planets
+        that we want.<br>
+        However, this would be a tedious task and would wase a lot of our time. There are a few more efficient ways that we can find info on each planet:
+        <ul>
+          <li>Loop by planet ID</li>
+          <li>Loop via nextpage attribute</li>
+          <li>Loop over each page of planets</li>
+        </ul>
+      </p>
+      <h4>Loop by planet ID</h4>
+      <p>
+        We can find info on every planet by looping over their IDs, since we know there are 61 planets and each planet
+        is a number from 1-61 we can just create a simple for loop that appends the ID number to the host URL during each loop and gets the information from that planet.
+<pre>
+for (var j = 1; j <= 61; j++) {
+  (function(i) {                  //need to create closure for j
+    var f = i;
+    var req = new XMLHttpRequest();
+    var URLhost = 'https://swapi.co/api/planets/+ f + '/';
+    req.open('GET', URLhost, true);
+...
+</pre>
+      </p>
+      <h4>Loop via nextpage attribute</h4>
+      <p>
+        In this method we can start our call normally using the original base URL <code>http http://swapi.co/api/planets/</code> and from there run a while loop to keep making new requests to the nexpage attribute to get the next planet page.
+<pre> 
+var i = 1;
+while (i < 2 {
+  if (response.next == null)
+    i++;
+}
+</pre>
+      </p>
+      <h4>Loop over each page of planets</h4>
+      <p>
+        In this method we will start our call with a base URL of <code>http http://swapi.co/api/planets/?page=</code> and we will use a for loop to go from page 1 to 7 and then access each planet in the results array.
+<pre>
+for (var j = 1; j < 8; j++) {
+  (function(i) {                  //need to create closure for j
+    var f = i;
+    var req = new XMLHttpRequest();
+    var URLhost = 'https://swapi.co/api/planets/?page=' + f;
+    req.open('GET', URLhost, true);
+...
+</pre>
+      </p>
+      <h2>Accessing the data we want</h2>
+      <p>
+        Depending on which method we choose to loop through the planets, we can access each planet's data very easily.
+        If we are looping over each page of planets, then we must access the planets via the results array. So as stated previously, if we wanted to access a planet's name via this method, we would need to code something like this:<br>
+<pre>
+var response = JSON.parse(req.responseText);
+for (var k = 0; k < response.results.length; k++) {
+  (function(y) {
+    var planetIn = document.createElement('li');
+    planetIn.textContent = response.results[y].name;
+  })(k);
+}
+</pre>
+        This will allow us to access each planet in the results array and get their name. In this particular example, we created list items and set their text content as the planet's name.<br>
+        If we decided to loop through all 61 planet's IDs we wouldn't need an additional loop to access each planets information, as each call would just generate 1 planet and not an array of 10. In this case, our code would be as simple as:<br>
+<pre>
+var response = JSON.parse(req.responseText);
+var planetIn = document.createElement('li');
+planetIn.textContent = response.name;
+</pre>
+        This code accomplishes the same task of creating a list item and setting its text content to the planet's name. The only problem with this type of call is that we would have to make a new call to the SWAPI 61 times, as opposed to 7.
+      </p>
+      <h5>Which method do you think would be the most efficient?</h5>
+    </div>
+
+    <div class="container text-center">
+      <h4>On the next page we'll go over the code to list every planet...</h4>
+      <p>
+        <a class="btn btn-warning btn-sml" href="page2.html" role="button">« Previous </a> 
+        <a class="btn btn-warning btn-sml" href="page4.html" role="button">Continue »</a>
+      </p>
+    </div>
+
+    <div class="container-fluid">
+      <footer>
+        <p>
+          © Tom Adamcewicz 2016
+        </p>
+      </footer>
+    </div>
+    <!--<script src="script.js"></script>-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

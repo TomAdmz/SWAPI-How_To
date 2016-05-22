@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Star Wars API How-To</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body> 
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-2" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> <a class="navbar-brand" href="main.html">Star Wars API How-To</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Menu <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="page1.html">SWAPI - Getting Started</a>
+                </li>
+                <li>
+                  <a href="page2.html">SWAPI - First Call with Javascript</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page3.html">SWAPI - Discovering Planets</a>
+                </li>
+                <li>
+                  <a href="page4.html">SWAPI - Listing all Planets</a>
+                </li>
+                <li>
+                  <a href="page5.html">SWAPI - Interactive Lists</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page6.html">SWAPI - Nesting Calls</a>
+                </li>
+                <li>
+                  <a href="page7.html">SWAPI - Final Project</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+      <div class="container">
+        <img src="page1.png" class="pull-right">
+        <h1>
+          Getting Started with SWAPI
+        </h1>
+        <p>
+          In this module we're going to go over how to get started with the SWAPI.<br>
+          You'll Learn:
+        <ul>
+          <li>SWAPI basics</li>
+          <li>Getting info from the call</li>
+        </ul>
+      </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>
+        SWAPI Basics
+      </h2>
+      <p> The SWAPI is a database with all different kinds of resources from the Star Wars universe.<br>
+      There are 6 main resources we can tap into:
+        <ul>
+          <li>People: 87</li>
+          <li>Films: 7</li>
+          <li>Starships: 37</li>
+          <li>Vehicles: 39</li>
+          <li>Species: 37</li>
+          <li>Planets: 61</li>
+        </ul>
+        Each of these resources has various attributes we can access as well as different ways we can access them.
+        The SWAPI is completely open so there is no need for an API key, however, it is rate limited to 10,000
+        API request per day per IP.<br>
+        To make a request all we need is the base URL:<br>
+        <code>http://swapi.co/api/</code><br>
+        From there we can choose which resource we want to tap into.
+      </p>
+      <h2>
+        Getting Info From The Call
+      </h2>
+      <p>
+        If we make a simple call to the SWAPI we can use the JSON response to get information from that call.
+        Lets use the Planets resource as an example since that's what we'll be working with.<br>
+        If we make a simple call to:<br>
+        <code>http http://swapi.co/api/planets/</code><br>
+        When we console.log() the response we will see something like this:<br>
+      <pre>
+      Object {count: 61, next: "http://swapi.co/api/planets/?page=2", previous: null, results: Array[10]}
+        count:61
+        next:"http://swapi.co/api/planets/?page=2"
+        previous:null
+        results:Array[10]
+            0:Object
+            climate:"temperate"
+            created:"2014-12-10T11:35:48.479000Z"
+            diameter:"12500"
+            edited:"2014-12-20T20:58:18.420000Z"
+            films:Array[2]
+            gravity:"1 standard"
+            name:"Alderaan"
+            orbital_period:"364"
+            population:"2000000000"
+            residents:Array[3]
+            rotation_period:"24"
+            surface_water:"40"
+            terrain:"grasslands, mountains"
+            url:"http://swapi.co/api/planets/2/"
+            __proto__:
+          Object1:
+          Object2:
+          Object3:
+          Object4:
+          Object5:
+          Object6:
+          Object7:
+          Object8:
+          Object9:
+        Object length:10
+        __proto__:Array[0]
+        __proto__:Object
+        </pre>
+        As we can see the call to <code>http http://swapi.co/api/planets/</code> gives us a lot of information.
+        It tells us the count of planets <b>61</b>. It tells us the base URLs of the next and previous pages of planets
+        and it gives us an array of 10 planet objects. In this call I expanded the planet object at index 0 so we can
+        see what attributes we can get from each planet. We can access its climate, films it's featured in, its name,
+        its residents and much more information.
+      </p>
+    </div>
+
+    <div class="container text-center">
+      <h4>On the next page we'll learn how to structure our first call via Javascript...</h4>
+      <p>
+        <a class="btn btn-warning btn-sml" href="main.html" role="button">« Previous </a> 
+        <a class="btn btn-warning btn-sml" href="page2.html" role="button">Continue »</a>
+      </p>
+    </div>
+
+    <div class="container-fluid">
+      <footer>
+        <p>
+          © Tom Adamcewicz 2016
+        </p>
+      </footer>
+    </div>
+    <!--<script src="script.js"></script>-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Star Wars API How-To</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body> 
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-2" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> <a class="navbar-brand" href="main.html">Star Wars API How-To</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Menu <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="page1.html">SWAPI - Getting Started</a>
+                </li>
+                <li>
+                  <a href="page2.html">SWAPI - First Call with JavaScript</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page3.html">SWAPI - Discovering Planets</a>
+                </li>
+                <li>
+                  <a href="page4.html">SWAPI - Listing all Planets</a>
+                </li>
+                <li>
+                  <a href="page5.html">SWAPI - Interactive Lists</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page6.html">SWAPI - Nesting Calls</a>
+                </li>
+                <li>
+                  <a href="page7.html">SWAPI - Final Project</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>
+          Making a call to SWAPI with JavaScript
+        </h1>
+        <img src="page2.png" class="pull-right">
+        <p>
+          In this module we're going to go over how we use JavaScript to make calls to SWAPI.<br>
+          You'll Learn:
+        <ul>
+          <li>JavaScript API structure</li>
+          <li>How to format our first call</li>
+          <li>Getting info from our call</li>
+        </ul>
+      </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>JavaScript API Structure/Our First Call</h2>
+      <p>
+        To start a JavaScript call we are going to need 2 things:<br>
+<pre>var req = new XMLHttpRequest();
+var URLhost = 'https://swapi.co/api/planets/</pre>
+        The req variable stands for the new request we are making to the API, where the URLhost is the page of
+        the SWAPI that we're calling.<br>
+        Next we are going to open the request to the SWAPI:
+<pre>
+req.open('GET', URLhost, true);
+req.addEventListener('load',function(){
+  if(req.status >= 200 && req.status < 400){
+    var response = JSON.parse(req.responseText);
+    console.log(response);
+  } else {
+    console.log('Error in network request: ' + req.statusText);
+  }});
+req.send(null);
+event.preventDefault();
+</pre>
+        Now we open the request, and add an event listener for when its loaded. If the request was successful we create
+        a response variable which holds the parsed response text from our call. From here we console.log() the response
+        which will be what we saw on the <a href="page1.html">previous</a> page.
+      </p>
+
+      <h2>Getting Info From Our Call</h2>
+      <p>
+        Looking at our console.log(), this is just returning page1 of the planets on the SWAPI, there is a results array
+        which holds 10 planet objects. Since the SWAPI has information on 61 planets, that means there must be 7 pages of planets that we can access. <br>
+        If we just wanted to access one planet we could do something like:<br>
+<pre>
+response.results[0].name;
+</pre>
+        This would give us the name of the planet in the 0th index of the results array. However, that isn't really useful to us because we would have to look at the console during every call to a planet page to find the planet
+        in the array we are looking for. The SWAPI allows us to search for planets by using their ID in the base URL call, however, there is no way of getting their ID other then going through each planet object in the results array and getting their "url" attribute which has their id.
+      </p>
+    </div>
+
+    <div class="container text-center">
+      <h4>On the next page we'll talk about how we are going to list all of the planets...</h4>
+      <p>
+        <a class="btn btn-warning btn-sml" href="page1.html" role="button">« Previous </a> 
+        <a class="btn btn-warning btn-sml" href="page3.html" role="button">Continue »</a>
+      </p>
+    </div>
+
+    <div class="container-fluid">
+      <footer>
+        <p>
+          © Tom Adamcewicz 2016
+        </p>
+      </footer>
+    </div>
+    <!--<script src="script.js"></script>-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

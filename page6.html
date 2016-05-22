@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Star Wars API How-To</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body> 
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-2" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> <a class="navbar-brand" href="main.html">Star Wars API How-To</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Menu <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="page1.html">SWAPI - Getting Started</a>
+                </li>
+                <li>
+                  <a href="page2.html">SWAPI - First Call with JavaScript</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page3.html">SWAPI - Discovering Planets</a>
+                </li>
+                <li>
+                  <a href="page4.html">SWAPI - Listing all Planets</a>
+                </li>
+                <li>
+                  <a href="page5.html">SWAPI - Interactive Lists</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page6.html">SWAPI - Nesting Calls</a>
+                </li>
+                <li>
+                  <a href="page7.html">SWAPI - Final Project</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>
+          CODE: Building on our SWAPI calls, adding movie appearances
+        </h1>
+        <img src="page6.jpg" class="pull-right img-circle">
+        <p>
+          In this module we're going to modify our code further to include the movies each planet appeared in.<br>
+          You'll Learn:
+        <ul>
+          <li>Nesting calls</li>
+          <li>Using SWAPI data to create new calls</li>
+        </ul>
+      </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Nesting Calls</h2>
+      <p>
+        We already have some experience with nesting calls when we used our for-loop to go through each planets page to get the names of the 61 planets. Now we are going to go one step further.<br>
+        If you recall from our <a href="page1.html">first example</a> of a call to a planets page, when we logged the response in the console there was an additional array within each planet object called films, it looked like this <code>films:Array[2]</code> when we expand this array we are shown the SWAPI urls for each movie's page that this planet appears in:
+<pre>
+films:Array[2]
+  0:"http://swapi.co/api/films/6/"
+  1:"http://swapi.co/api/films/1/"
+  length:2
+</pre>
+        Just as we've been using the planets page numbers to make separate SWAPI calls to get each planet's name, we can now use each planet's film array to make separate calls to each film's page that the planet appears in. With a few conditional statements and another for-loop to loop through the films array we can make additional calls to the SWAPI to get the names of each film the planet appeared in.
+      </p>
+      <h2>Using SWAPI data to create new calls</h2>
+      <p>
+        Now that we know that each planet object has an array with urls to their films, we can leverage this data to loop through that array and print out the titles of each film that planet appears in. First we are going to want to make sure that the planet even has data in the films array so we don't waste time trying to access nothing! From there we will use another for-loop to make calls to the SWAPI using the address provided from the films array.
+<pre>
+if (response.results[y].films.length > 0) {
+  var movieHead = document.createElement('h6');
+  movieHead.textContent = 'Movie Appearances:';
+  planetIn.appendChild(movieHead)
+  var movieList = document.createElement('ol');
+  movieHead.appendChild(movieList);
+  for (var e = 0; e < response.results[y].films.length; e++) {
+    (function(x) {
+      var newURLhost = response.results[y].films[x];
+      var newReq = new XMLHttpRequest();
+      newReq.open('GET', newURLhost, true);
+      newReq.addEventListener('load', function(){
+      if(newReq.status >= 200 && newReq.status < 400){
+        var newResponse = JSON.parse(newReq.responseText);
+        var movie = document.createElement('li');
+        movie.textContent = newResponse.title;
+        movieList.appendChild(movie);
+      } else {
+        console.log("Error in network request: " + newReq.statusText);
+      }});
+      newReq.send(null);
+      event.preventDefault();
+    })(e);
+  }
+}
+</pre>
+        This will be added to our code, right after we add the planet's name to the document. We first check to make sure the films array isn't empty. If it isn't we create an <code>h6</code> for "Movie Appearances", then we append an ordered list. Again we have to use a for-loop to loop through the films array and we must remember to add a function closure to ensure we get the proper results. we set the <code>newURLhost</code> to the film's URL that we get from the films array. We then open the request and parse the response, the response is then made into a list element which we append to the ordered list of Movie Appearances.<br>
+        The initial call will look like this:
+<pre>
+  var docBod = document.getElementById('docBod');
+  var f = 1;
+  var req = new XMLHttpRequest();
+  var URLhost = 'https://swapi.co/api/planets/?page=' + f;
+  req.open('GET', URLhost, true);
+  req.addEventListener('load', function() {
+    if (req.status >= 200 && req.status < 400) {
+      var response = JSON.parse(req.responseText);
+      console.log(response);
+      var planetHead = document.createElement('h3');
+      docBod.appendChild(planetHead);
+      planetHead.textContent = 'Planets Page - ' + f;
+      var planetList = document.createElement('ol');
+      planetHead.appendChild(planetList);
+
+      for (var k = 0; k < response.results.length; k++) {
+        (function(y) {
+          var planetIn = document.createElement('li');
+          planetIn.textContent = response.results[y].name;
+          if (response.results[y].films.length > 0) {
+            var movieHead = document.createElement('h6');
+            movieHead.textContent = 'Movie Appearances:';
+            planetIn.appendChild(movieHead)
+            var movieList = document.createElement('ol');
+            movieHead.appendChild(movieList);
+            for (var e = 0; e < response.results[y].films.length; e++) {
+              (function(x) {
+                var newURLhost = response.results[y].films[x];
+                var newReq = new XMLHttpRequest();
+                newReq.open('GET', newURLhost, true);
+                newReq.addEventListener('load', function(){
+                  if(newReq.status >= 200 && newReq.status < 400){
+                    var newResponse = JSON.parse(newReq.responseText);
+                    var movie = document.createElement('li');
+                    movie.textContent = newResponse.title;
+                    movieList.appendChild(movie);
+                  } else {
+                    console.log("Error in network request: " + newReq.statusText);
+                  }});
+                newReq.send(null);
+                event.preventDefault();
+              })(e);
+            }
+          }
+          planetList.appendChild(planetIn);
+        })(k);
+      }
+    } else {
+      console.log('Error in network request: ' + req.statusText);
+    }
+  });
+  req.send(null);
+  event.preventDefault();
+</pre>
+        See if you can add the new code to update the event listeners for the next and prev buttons!
+      </p>
+      <br>
+      <p>
+        Our final product will look like this:
+        <p data-height="420" data-theme-id="dark" data-slug-hash="NNVMMw" data-default-tab="result" data-user="TomAdmz" data-embed-version="2" class="codepen">See the Pen <a href="http://codepen.io/TomAdmz/pen/NNVMMw/">SWAPI_planets_films</a> by Tom (<a href="http://codepen.io/TomAdmz">@TomAdmz</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+      </p>
+    </div>
+
+    <div class="container text-center">
+      <h4>On the next page we'll tie everything together with our final project...</h4>
+      <p>
+        <a class="btn btn-warning btn-sml" href="page5.html" role="button">« Previous </a> 
+        <a class="btn btn-warning btn-sml" href="page7.html" role="button">Continue »</a>
+      </p>
+    </div>
+
+    <div class="container-fluid">
+      <footer>
+        <p>
+          © Tom Adamcewicz 2016
+        </p>
+      </footer>
+    </div>
+    <!--<script src="script.js"></script>-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script async src="https://assets.codepen.io/assets/embed/ei.js"></script>
+  </body>
+</html>

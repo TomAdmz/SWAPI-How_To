@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Star Wars API How-To</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body> 
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-2" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> <a class="navbar-brand" href="main.html">Star Wars API How-To</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Menu <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="page1.html">SWAPI - Getting Started</a>
+                </li>
+                <li>
+                  <a href="page2.html">SWAPI - First Call with JavaScript</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page3.html">SWAPI - Discovering Planets</a>
+                </li>
+                <li>
+                  <a href="page4.html">SWAPI - Listing all Planets</a>
+                </li>
+                <li>
+                  <a href="page5.html">SWAPI - Interactive Lists</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="page6.html">SWAPI - Nesting Calls</a>
+                </li>
+                <li>
+                  <a href="page7.html">SWAPI - Final Project</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>
+          CODE: Looping to list every planet
+        </h1>
+        <img src="page4.jpg" class="pull-right img-circle">
+        <p>
+          In this module we're going to go over the code to loop through all of the planets and list them.<br>
+          You'll Learn:
+        <ul>
+          <li>How to loop through calls to get information</li>
+          <li>How to add the information we want to the DOM</li>
+        </ul>
+      </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Starting our code to loop through the planet pages</h2>
+      <p>
+        Now we're ready to put what we've learned into action. We're going to make calls the the SWAPI using a base url of: <code>http http://swapi.co/api/planets/?page=</code>. We will be using the method of looping through planet pages to list all 61 planets. We are going to create a function that we are going to call when the DOM is loaded<br>
+        First we set up our call as we did before inside of a function:
+<pre>
+function loadPlanets(){
+  var docBod = document.body;
+  for (var j = 1; j < 8; j++) {
+    (function(i) {                  //need to create closure for j
+      var f = i;
+      var req = new XMLHttpRequest();
+      var URLhost = 'https://swapi.co/api/planets/?page=' + f;
+      req.open('GET', URLhost, true);
+      req.addEventListener('load',function(){
+        if(req.status >= 200 && req.status < 400){
+          var response = JSON.parse(req.responseText);
+          console.log(response);
+...
+</pre>
+        We create the load function and add a variable docBod to make it easier to access the document's body. Then we enter our for loop, the next part is very important, we have to create a closure for our function so that it logs the correct value of "j" through each loop. We open the request as usual and append the value of "f" to the end, which represents "j"s value in that loop and calls each different planet page. After that we load the response and parse it, we then send that to the console to view (it isn't required to console.log() the response, but it's helpful when debugging).
+      </p>
+      <h2>Adding the info to the DOM</h2>
+      <p>
+        Now that we have the loop set up to make calls to the SWAPI, we want to add content to the DOM. We are now going to produce the code to add each planet's name to the DOM by using the results array that we get from a call to each planets page.
+<pre>
+          var planetHead = document.createElement('h5');
+          docBod.appendChild(planetHead);
+          planetHead.textContent = 'Planets Page - ' + f;
+          var planetList = document.createElement('ol');
+          planetHead.appendChild(planetList);
+
+          for (var k = 0; k < response.results.length; k++) {
+            (function(y) {
+              var planetIn = document.createElement('li');
+              planetIn.textContent = response.results[y].name;
+              planetList.appendChild(planetIn);
+            })(k);
+          }
+
+        } else {
+          console.log('Error in network request: ' + req.statusText);
+        }});
+        req.send(null);
+        event.preventDefault();
+      })(j);
+    }
+  }
+</pre>
+        Now inside of our for loop we are creating an h5 element for each planet page and appending the planet page number to the text content. Under each h5 we then create an ordered list child. We then enter another for loop to loop through the results array, again we have to create a function closure for our counter varible "k". In this loop we create a list element, add the planet's name, and then append that to the ordered list we created.
+        Finally we can end our requets and complete the closure for the outer for loop, passing it the counter "j".
+      </p>
+      <h2>Let's see it in action!</h2>
+      <p>
+        Take a look at the codepen sample below to see how the code works in action!
+     <p data-height="265" data-theme-id="dark" data-slug-hash="aNrYow" data-default-tab="result" data-user="TomAdmz" data-embed-version="2" class="codepen">See the Pen <a href="https://codepen.io/TomAdmz/pen/aNrYow/">aNrYow</a> by Tom (<a href="http://codepen.io/TomAdmz">@TomAdmz</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+      </p>
+    </div>
+
+    <div class="container text-center">
+      <h4>On the next page we'll modify our code to display each page, 1 at a time, by adding buttons...</h4>
+      <p>
+        <a class="btn btn-warning btn-sml" href="page3.html" role="button">« Previous </a> 
+        <a class="btn btn-warning btn-sml" href="page5.html" role="button">Continue »</a>
+      </p>
+    </div>
+
+    <div class="container-fluid">
+      <footer>
+        <p>
+          © Tom Adamcewicz 2016
+        </p>
+      </footer>
+    </div>
+    <!--<script src="script.js"></script>-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script async src="https://assets.codepen.io/assets/embed/ei.js"></script>
+  </body>
+</html>
